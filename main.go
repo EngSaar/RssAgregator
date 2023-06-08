@@ -12,17 +12,13 @@ import (
 )
 
 func main() {
-	err := godotenv.Load()
-	var portString string
 
-	if err != nil {
-		log.Fatal("Porta não configurada...")
-	} else {
-		portString = os.Getenv("PORT")
-	}
+	portString := LoadEnviroment()
+	serverStarter(portString)
 
-	fmt.Println("SUCESSO! \n PORT: " + portString)
+}
 
+func serverStarter(portString string) {
 	router := chi.NewRouter()
 	router.Use(cors.Handler(cors.Options{
 		AllowedOrigins:   []string{"https://*", "http://*"},
@@ -35,6 +31,7 @@ func main() {
 
 	v1Router := chi.NewRouter()
 	v1Router.Get("/healthz", handlerReadiness)
+	v1Router.Get("/produtos", handlerReadiness)
 	v1Router.Put("/err", handlerErro)
 
 	router.Mount("/v1", v1Router)
@@ -49,5 +46,18 @@ func main() {
 	if erro != nil {
 		log.Fatal(erro)
 	}
+}
 
+func LoadEnviroment() string {
+	err := godotenv.Load()
+	var portString string
+
+	if err != nil {
+		log.Fatal("Porta não configurada...")
+	} else {
+		portString = os.Getenv("PORT")
+	}
+
+	fmt.Println("SUCESSO! \n PORT: " + portString)
+	return portString
 }
