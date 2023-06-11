@@ -31,7 +31,8 @@ func serverStarter(portString string) {
 
 	v1Router := chi.NewRouter()
 	v1Router.Get("/healthz", handlerReadiness)
-	v1Router.Get("/produtos", handlerReadiness)
+	v1Router.Get("/produtos", handlerGet)
+	v1Router.Post("/produtos", handlerPost)
 	v1Router.Put("/err", handlerErro)
 
 	router.Mount("/v1", v1Router)
